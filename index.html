@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Xvlover AI • All-in-One Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: linear-gradient(145deg, #0a0f1e 0%, #121728 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.2rem;
+      color: #e7edff;
+    }
+    .hub {
+      max-width: 680px;
+      width: 100%;
+      background: rgba(18, 24, 40, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 2.8rem;
+      padding: 1.8rem 1.5rem 2rem;
+      box-shadow: 0 30px 55px rgba(0,0,0,0.7), 0 0 0 1px rgba(120, 180, 255, 0.15);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.25s ease;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #c084fc, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #2dd4bf20;
+      border: 1px solid #2dd4bf;
+      color: #2dd4bf;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.9rem;
+      border-radius: 3rem;
+      letter-spacing: 0.4px;
+      -webkit-text-fill-color: #2dd4bf;
+      background-clip: unset;
+    }
+    .sub {
+      color: #93a3cf;
+      margin-bottom: 1.8rem;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+    }
+    .card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 1.8rem;
+      padding: 1.2rem 1.2rem 1.3rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 20px -8px rgba(0,0,0,0.5);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      border-color: rgba(96, 165, 250, 0.4);
+      transform: translateY(-2px);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #dbeafe;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+    button, .btn-link {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #f0f4ff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      text-decoration: none;
+      background: rgba(30, 40, 65, 0.7);
+    }
+    button:hover, .btn-link:hover {
+      background: #2d3b6b;
+      border-color: #60a5fa;
+      color: white;
+      box-shadow: 0 0 15px #3b82f640;
+    }
+    input, select {
+      background: #0b1120cc;
+      border: 1px solid #334155;
+      border-radius: 2.2rem;
+      padding: 0.7rem 1.1rem;
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+      backdrop-filter: blur(8px);
+      flex: 2;
+      min-width: 180px;
+    }
+    input::placeholder {
+      color: #7c8bb0;
+    }
+    .game-area {
+      background: #0b0f1c;
+      border-radius: 1.4rem;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      font-family: monospace;
+    }
+    .word-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin: 0.6rem 0;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+    }
+    .settings-icon {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #b9c7ff;
+      padding: 0.2rem 0.4rem;
+      border-radius: 50%;
+    }
+    hr {
+      border-color: rgba(255,255,255,0.08);
+      margin: 0.8rem 0 0.6rem;
+    }
+    .footer {
+      font-size: 0.75rem;
+      color: #7a87b0;
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .ai-response {
+      background: #0f1322;
+      border-radius: 1.2rem;
+      padding: 0.7rem 1rem;
+      margin-top: 0.8rem;
+      max-height: 130px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+<div class="hub" id="mainHub">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Xvlover<span class="badge">VIP</span></h1>
+    <button id="gearBtn" class="settings-icon" title="Pengaturan & Penulis">⚙️</button>
+  </div>
+  <div class="sub">
+    <span>mode: Dev 🔥</span>
+    <span>🗿😈👾</span>
+  </div>
+
+  <!-- fitur 1 : Download All Link -->
+  <div class="card">
+    <h2>⬇️ Download All Link</h2>
+    <div class="btn-group">
+      <input type="url" id="urlInput" placeholder="Tempel URL (video/gambar)" value="https://example.com/file">
+      <button id="downloadBtn">📥 Download</button>
+    </div>
+    <div style="font-size:0.75rem; margin-top:0.5rem; color:#8e9bc0;">link langsung diproses (simulasi unduh)</div>
+  </div>
+
+  <!-- fitur 2 : Game Sambung Kata & Susun Kata + Family100 -->
+  <div class="card">
+    <h2>🎮 Game Kata</h2>
+    <div class="btn-group" style="margin-bottom:0.7rem;">
+      <button id="gameSambungBtn">🔗 Sambung Kata</button>
+      <button id="gameSusunBtn">🧩 Susun Kata</button>
+      <button id="gameFamilyBtn">👨‍👩‍👧 Family100</button>
+    </div>
+    <div id="gameDisplay" class="game-area">
+      <div id="gameText">👉 Pilih game untuk mulai</div>
+      <div id="gameInputRow" class="btn-group hidden" style="margin-top:0.7rem;">
+        <input type="text" id="gameAnswer" placeholder="Jawabanmu...">
+        <button id="submitGameBtn">Kirim</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- fitur 3 : AI (GPT, Gemini, Meta AI) -->
+  <div class="card">
+    <h2>🤖 AI Assistant</h2>
+    <div class="btn-group">
+      <select id="aiModel">
+        <option value="gpt">🧠 GPT-4o</option>
+        <option value="gemini">🌌 Gemini</option>
+        <option value="meta">🌀 Meta AI (Llama)</option>
+      </select>
+      <input type="text" id="aiPrompt" placeholder="Tanya AI...">
+      <button id="aiSendBtn">➤</button>
+    </div>
+    <div id="aiResponseBox" class="ai-response">💬 Jawaban AI muncul disini...</div>
+  </div>
+
+  <!-- Pengaturan / Penulis (gerigi) -->
+  <div id="settingsPanel" class="card hidden">
+    <h2>⚙️ Pengaturan & Penulis</h2>
+    <div style="display:flex; flex-direction: column; gap:0.5rem;">
+      <p><strong>✍️ Penulis:</strong> Rahmad Faujan</p>
+      <p><strong>📚 Karya:</strong> Noveltoon Creator</p>
+      <p><strong>📍 Asal:</strong> Palu, Sulawesi Tengah</p>
+      <p style="font-size:0.8rem; color:#b9c2e0;">Xvlover AI versi 1.0 VIP • DevMode aktif</p>
+      <button id="closeSettingsBtn" style="align-self: flex-start;">Tutup</button>
+    </div>
+  </div>
+  <div class="footer">🐽 Xvlover AI · mantap derr · ya aman aja</div>
+</div>
+
+<script>
+  (function() {
+    // Const & state
+    const responTexts = ["Xvlover ai aktif", "Ada yang bisa di bantu?", "ya aman aja", "mantap derr"];
+    
+    // Game state
+    let currentGame = null; // 'sambung', 'susun', 'family'
+    let gameData = {
+      sambung: { currentWord: "rumah", usedWords: new Set(["rumah"]) },
+      susun: { target: "palu", scrambled: "ulap", clue: "ibu kota sulawesi tengah" },
+      family: { question: "Sebutkan hewan yang bisa terbang?", answers: ["burung","kelelawar"," kupu-kupu","lebah"], scores: 0 }
+    };
+
+    // DOM elements
+    const gearBtn = document.getElementById('gearBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const urlInput = document.getElementById('urlInput');
+    
+    // Game buttons
+    const sambungBtn = document.getElementById('gameSambungBtn');
+    const susunBtn = document.getElementById('gameSusunBtn');
+    const familyBtn = document.getElementById('gameFamilyBtn');
+    const gameDisplay = document.getElementById('gameDisplay');
+    const gameText = document.getElementById('gameText');
+    const gameInputRow = document.getElementById('gameInputRow');
+    const gameAnswer = document.getElementById('gameAnswer');
+    const submitGameBtn = document.getElementById('submitGameBtn');
+
+    // AI
+    const aiModel = document.getElementById('aiModel');
+    const aiPrompt = document.getElementById('aiPrompt');
+    const aiSendBtn = document.getElementById('aiSendBtn');
+    const aiResponseBox = document.getElementById('aiResponseBox');
+
+    // Utility: random respon
+    function randomRespon() {
+      return responTexts[Math.floor(Math.random() * responTexts.length)];
+    }
+
+    // Toggle settings
+    gearBtn.addEventListener('click', () => {
+      settingsPanel.classList.toggle('hidden');
+    });
+    closeSettingsBtn.addEventListener('click', () => {
+      settingsPanel.classList.add('hidden');
+    });
+
+    // FITUR 1: Download link (simulasi download all)
+    downloadBtn.addEventListener('click', () => {
+      let url = urlInput.value.trim();
+      if (!url) {
+        alert('Masukkan link dulu tod 😜');
+        return;
+      }
+      // Buat anchor untuk download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = url.split('/').pop() || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      alert(`Download dimulai: ${url} \n${randomRespon()}`);
+    });
+
+    // Game helper: reset UI
+    function showGameInput(show = true) {
+      if (show) {
+        gameInputRow.classList.remove('hidden');
+      } else {
+        gameInputRow.classList.add('hidden');
+      }
+    }
+
+    function updateGameText(text) {
+      gameText.innerHTML = text;
+    }
+
+    // Sambung Kata
+    function startSambung() {
+      currentGame = 'sambung';
+      gameData.sambung.currentWord = "rumah";
+      gameData.sambung.usedWords = new Set(["rumah"]);
+      updateGameText(`🔤 Sambung Kata: <b>${gameData.sambung.currentWord}</b> <br> <small>lanjutkan dengan huruf terakhir: <b>${gameData.sambung.currentWord.slice(-1).toUpperCase()}</b></small>`);
+      showGameInput(true);
+      gameAnswer.value = '';
+      gameAnswer.focus();
+    }
+
+    function processSambung(answer) {
+      const lastChar = gameData.sambung.currentWord.slice(-1).toLowerCase();
+      const inputWord = answer.trim().toLowerCase();
+      if (!inputWord) {
+        alert('Isi kata dulu anjay 😜');
+        return;
+      }
+      if (inputWord.charAt(0) !== lastChar) {
+        alert(`Harus diawali huruf "${lastChar.toUpperCase()}" bangke 😫`);
+        return;
+      }
+      if (gameData.sambung.usedWords.has(inputWord)) {
+        alert('Kata sudah dipakai, bego! cari lain 🖕');
+        return;
+      }
+      gameData.sambung.usedWords.add(inputWord);
+      gameData.sambung.currentWord = inputWord;
+      updateGameText(`✅ Benar! <b>${inputWord}</b><br>Lanjut huruf: <b>${inputWord.slice(-1).toUpperCase()}</b>`);
+      gameAnswer.value = '';
+    }
+
+    // Susun Kata
+    function startSusun() {
+      currentGame = 'susun';
+      gameData.susun.target = "palu";
+      gameData.susun.scrambled = "ulap";
+      gameData.susun.clue = "ibu kota sulawesi tengah";
+      updateGameText(`🧩 Susun Kata: <b>${gameData.susun.scrambled.toUpperCase()}</b> <br>📌 petunjuk: ${gameData.susun.clue}`);
+      showGameInput(true);
+      gameAnswer.value = '';
+    }
+
+    function processSusun(answer) {
+      if (answer.trim().toLowerCase() === gameData.susun.target) {
+        alert(`Mantap! ${gameData.susun.target.toUpperCase()} benar 🎉`);
+        updateGameText(`🏆 Kamu berhasil! kata: ${gameData.susun.target}`);
+        showGameInput(false);
+        currentGame = null;
+      } else {
+        alert('Salah tot, coba lagi 🐷');
+      }
+    }
+
+    // Family100
+    function startFamily() {
+      currentGame = 'family';
+      gameData.family.question = "Sebutkan hewan yang bisa terbang?";
+      gameData.family.answers = ["burung","kelelawar","kupu-kupu","lebah"];
+      updateGameText(`👨‍👩‍👧 Family100: ${gameData.family.question} <br><small>jawab satu per satu</small>`);
+      showGameInput(true);
+      gameAnswer.value = '';
+    }
+
+    function processFamily(answer) {
+      const ans = answer.trim().toLowerCase();
+      const possible = gameData.family.answers.map(a=>a.toLowerCase());
+      if (possible.includes(ans)) {
+        alert(`Benar! ${ans} ✅`);
+        updateGameText(`🎯 jawaban diterima: ${ans}. Lanjutkan!`);
+      } else {
+        alert("Belum tepat njir, coba lagi 😈");
+      }
+    }
+
+    // Submit game answer
+    submitGameBtn.addEventListener('click', () => {
+      if (!currentGame) {
+        alert('Pilih game dulu bos 🗿');
+        return;
+      }
+      const answer = gameAnswer.value;
+      if (currentGame === 'sambung') processSambung(answer);
+      else if (currentGame === 'susun') processSusun(answer);
+      else if (currentGame === 'family') processFamily(answer);
+    });
+
+    // Game button listeners
+    sambungBtn.addEventListener('click', startSambung);
+    susunBtn.addEventListener('click', startSusun);
+    familyBtn.addEventListener('click', startFamily);
+
+    // AI integrasi simulasi (GPT, Gemini, Meta)
+    aiSendBtn.addEventListener('click', async () => {
+      const prompt = aiPrompt.value.trim();
+      if (!prompt) {
+        aiResponseBox.innerText = '😜 Tulis pertanyaan dulu anjg...';
+        return;
+      }
+      const model = aiModel.value;
+      aiResponseBox.innerText = '⏳ Memproses...';
+      
+      // Simulasi AI response (karena frontend hanya demo, tanpa API key asli)
+      // Menampilkan respon natural sesuai model
+      setTimeout(() => {
+        let response = '';
+        const lowerPrompt = prompt.toLowerCase();
+        if (model === 'gpt') {
+          response = `🧠 GPT-4o: "${prompt}" -> Menurut data, ini menarik! (simulasi jawaban cerdas)`;
+        } else if (model === 'gemini') {
+          response = `🌌 Gemini: Halo! Berdasarkan prompt "${prompt}", saya rekomendasikan eksplorasi lebih lanjut.`;
+        } else if (model === 'meta') {
+          response = `🌀 Meta AI: Untuk "${prompt}" – jawaban ramah dari Llama.`;
+        }
+        // Tambahkan sentuhan Xvlover
+        aiResponseBox.innerText = response + `\n${randomRespon()} 😹`;
+      }, 700);
+    });
+
+    // Enter key untuk AI
+    aiPrompt.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') aiSendBtn.click();
+    });
+    gameAnswer.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitGameBtn.click();
+    });
+
+    // Init random vibes
+    console.log('Xvlover AI aktif', randomRespon());
+    // Set default game none
+    showGameInput(false);
+  })();
+</script>
+</body>
+                                               </html>
