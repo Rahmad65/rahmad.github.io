@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Xvlover Game Hub • Premium Puzzle</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #12121a;
+            --gold: #d4af37;
+            --gold2: #f0c75e;
+            --accent: #6c5ce7;
+            --accent2: #a29bfe;
+            --text: #e8e6f0;
+            --sub: #8e8ca0;
+            --danger: #ff6b6b;
+            --success: #2ed573;
+            --border: rgba(255, 255, 255, 0.06);
+            --glass: rgba(18, 18, 26, 0.85);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            color: var(--text);
+            background-image: radial-gradient(ellipse at top, #1a1a2e 0%, #0a0a0f 60%),
+                radial-gradient(ellipse at bottom right, #1a1a3e 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ========== PARTICLES BG ========== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: floatUp 8s infinite ease-in;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* ========== MAIN CONTAINER ========== */
+        .app {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.2rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--gold2), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s;
+        }
+        .icon-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent2);
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+            transform: scale(1.05);
+        }
+        .icon-btn.active {
+            background: var(--accent);
+            border-color: var(--accent2);
+        }
+
+        /* ========== CARD GLASS ========== */
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 1.3rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+        }
+
+        /* ========== LOBBY ========== */
+        .lobby-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .game-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 1.2rem;
+            padding: 1.2rem 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .game-card:hover::before {
+            opacity: 1;
+        }
+        .game-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
+        }
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .game-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .game-sub {
+            font-size: 0.7rem;
+            color: var(--sub);
+            margin-top: 0.2rem;
+        }
+        .badge-new {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+
+        /* ========== GAME AREA ========== */
+        .hidden {
+            display: none !important;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .back-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent2);
+        }
+        .score-display {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 1rem;
+        }
+        .question-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .question-clue {
+            font-size: 0.8rem;
+            color: var(--sub);
+            margin-top: 0.4rem;
+        }
+        .question-img {
+            max-width: 100%;
+            border-radius: 0.8rem;
+            margin: 0.5rem 0;
+            border: 2px solid var(--border);
+        }
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .input-game {
+            flex: 2;
+            min-width: 150px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--border);
+            color: #fff;
+            padding: 0.8rem 1rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-game:focus {
+            border-color: var(--gold);
+        }
+        .input-game::placeholder {
+            color: #555;
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--accent), #5a4fcf);
+            border: none;
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            box-shadow: 0 6px 25px rgba(108, 92, 231, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn.gold {
+            background: linear-gradient(135deg, var(--gold), #b8960f);
+        }
+        .btn.gold:hover {
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent2);
+        }
+        .feedback {
+            text-align: center;
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 1rem;
+            min-height: 1.5rem;
+        }
+        .feedback.correct {
+            color: var(--success);
+        }
+        .feedback.wrong {
+            color: var(--danger);
+        }
+
+        /* ========== SETTINGS PANEL ========== */
+        .settings-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .setting-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .toggle {
+            width: 50px;
+            height: 28px;
+            background: #333;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle.on {
+            background: var(--accent);
+        }
+        .toggle::after {
+            content: '';
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: left 0.3s;
+        }
+        .toggle.on::after {
+            left: 25px;
+        }
+        select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+        .credit-text {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--sub);
+            margin-top: 0.5rem;
+        }
+        .credit-text span {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ========== TOAST ========== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+            animation: slideDown 0.4s ease, fadeOut 0.4s 2.5s forwards;
+            pointer-events: none;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-80px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 400px) {
+            .lobby-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .game-card {
+                padding: 0.8rem 0.5rem;
+            }
+            .game-icon {
+                font-size: 2rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="toast"></div>
+
+    <!-- Main App -->
+    <div class="app">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🎮</div>
+                <div class="logo-text">Xvlover Game</div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="btnSound" title="Sound">🔊</button>
+                <button class="icon-btn" id="btnSettings" title="Pengaturan">⚙️</button>
+            </div>
+        </div>
+
+        <!-- LOBBY -->
+        <div id="lobby">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;text-align:center;font-size:1.1rem;">✨ Pilih Permainan</h3>
+                <div class="lobby-grid">
+                    <div class="game-card" onclick="startGame('tebakkalimat')">
+                        <span class="badge-new">🔥</span>
+                        <div class="game-icon">💬</div>
+                        <div class="game-title">Tebak Kalimat</div>
+                        <div class="game-sub">Lengkapi peribahasa</div>
+                    </div>
+                    <div class="game-card" onclick="startGame('tebakgambar')">
+                        <span class="badge-new">🖼️</span>
+                        <div class="game-icon">🖼️</div>
+                        <div class="game-title">Tebak Gambar</div>
+                        <div class="game-sub">Tebak dari ilustrasi</div>
+                    </div>
+                    <div class="game-card" onclick="startGame('susunkata')">
+                        <div class="game-icon">🔤</div>
+                        <div class="game-title">Susun Kata</div>
+                        <div class="game-sub">Anagram jadi kata</div>
+                    </div>
+                    <div class="game-card" onclick="startGame('asahotak')">
+                        <div class="game-icon">🧠</div>
+                        <div class="game-title">Asah Otak</div>
+                        <div class="game-sub">Kuis pengetahuan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="credit-text">
+                Powered by <span>@pitucode</span> API • Xvlover AI Hub
+            </div>
+        </div>
+
+        <!-- GAME AREA -->
+        <div id="gameArea" class="card hidden">
+            <div class="game-header">
+                <button class="back-btn" onclick="backToLobby()">← Lobby</button>
+                <span id="gameTitle" style="font-weight:700;">Game</span>
+                <span class="score-display">⭐ <span id="scoreCount">0</span></span>
+            </div>
+            <div class="question-box" id="questionBox">
+                <div class="question-text" id="questionText">-</div>
+                <div class="question-clue" id="questionClue"></div>
+                <img id="questionImg" class="question-img hidden" alt="Tebak Gambar">
+            </div>
+            <div class="input-group">
+                <input type="text" class="input-game" id="answerInput" placeholder="Ketik jawabanmu..." autocomplete="off">
+                <button class="btn gold" onclick="submitAnswer()">Jawab</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <button class="btn btn-outline" style="width:100%;margin-top:0.8rem;" onclick="skipQuestion()">⏭️ Lewati</button>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="settingsPanel" class="card hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                <h3 style="font-size:1.1rem;">⚙️ Pengaturan</h3>
+                <button class="back-btn" onclick="toggleSettings()">✕ Tutup</button>
+            </div>
+            <div class="settings-panel">
+                <div class="setting-row">
+                    <span class="setting-label">🔊 Sound Effect</span>
+                    <div class="toggle on" id="toggleSound" onclick="toggleSound()"></div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">🎵 Musik Latar</span>
+                    <div class="toggle" id="toggleMusic" onclick="toggleMusic()"></div>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label">🌐 API Source</span>
+                    <select id="apiSource" onchange="showToast('API disimpan ✅')">
+                        <option value="pitucode" selected>@pitucode (Default)</option>
+                    </select>
+                </div>
+            </div>
+            <hr style="border-color:var(--border);margin:1rem 0;">
+            <div class="credit-text">
+                🎮 <span>Xvlover Game Hub</span> v1.0 Premium<br>
+                API by <span>@pitucode</span> • Dev by <span>Rahmad Faujan</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ CONFIG ============
+        const API_KEY = '7C0dE2bcff3';
+        const API_BASE = 'https://api.pitucode.com/puzzle';
+        let currentGame = null;
+        let currentAnswer = '';
+        let score = 0;
+        let soundEnabled = true;
+        let musicEnabled = false;
+
+        // ============ AUDIO ============
+        const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+
+        function playBeep(freq, type = 'sine', duration = 0.15, vol = 0.3) {
+            if (!soundEnabled) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function sfxCorrect() { playBeep(880, 'square', 0.1);
+            playBeep(1100, 'square', 0.15, 0.25); }
+
+        function sfxWrong() { playBeep(200, 'sawtooth', 0.3, 0.2); }
+
+        function sfxClick() { playBeep(600, 'sine', 0.05, 0.15); }
+
+        function sfxWin() {
+            [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playBeep(f, 'square', 0.2, 0.25), i * 100));
+        }
+
+        // ============ PARTICLES ============
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // ============ TOAST ============
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // ============ SOUND TOGGLE ============
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btnSound');
+            const toggle = document.getElementById('toggleSound');
+            if (soundEnabled) {
+                btn.textContent = '🔊';
+                toggle.classList.add('on');
+            } else {
+                btn.textContent = '🔇';
+                toggle.classList.remove('on');
+            }
+            sfxClick();
+            showToast(soundEnabled ? 'Sound ON 🔊' : 'Sound OFF 🔇');
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            const toggle = document.getElementById('toggleMusic');
+            if (musicEnabled) toggle.classList.add('on');
+            else toggle.classList.remove('on');
+            sfxClick();
+            showToast(musicEnabled ? 'Musik ON 🎵 (coming soon)' : 'Musik OFF');
+        }
+
+        document.getElementById('btnSound').addEventListener('click', toggleSound);
+        document.getElementById('toggleSound').addEventListener('click', toggleSound);
+        document.getElementById('toggleMusic').addEventListener('click', toggleMusic);
+
+        // ============ SETTINGS ============
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const lobby = document.getElementById('lobby');
+            const gameArea = document.getElementById('gameArea');
+            const btnSettings = document.getElementById('btnSettings');
+
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                lobby.classList.add('hidden');
+                gameArea.classList.add('hidden');
+                btnSettings.classList.add('active');
+            } else {
+                panel.classList.add('hidden');
+                lobby.classList.remove('hidden');
+                btnSettings.classList.remove('active');
+            }
+            sfxClick();
+        }
+        document.getElementById('btnSettings').addEventListener('click', toggleSettings);
+
+        // ============ API CALL ============
+        async function fetchQuestion(type) {
+            try {
+                const res = await fetch(`${API_BASE}/${type}?apikey=${API_KEY}`);
+                const data = await res.json();
+                if (data.success) return data.result;
+                throw new Error('API gagal');
+            } catch (e) {
+                showToast('⚠️ Gagal ambil soal, coba lagi');
+                return null;
+            }
+        }
+
+        // ============ START GAME ============
+        async function startGame(type) {
+            sfxClick();
+            const data = await fetchQuestion(type);
+            if (!data) return;
+
+            currentGame = type;
+            currentAnswer = data.jawaban.trim().toLowerCase();
+            document.getElementById('lobby').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('settingsPanel').classList.add('hidden');
+            document.getElementById('answerInput').value = '';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('questionImg').classList.add('hidden');
+
+            switch (type) {
+                case 'tebakkalimat':
+                    document.getElementById('gameTitle').textContent = '💬 Tebak Kalimat';
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Lengkapi peribahasa di atas';
+                    break;
+                case 'tebakgambar':
+                    document.getElementById('gameTitle').textContent = '🖼️ Tebak Gambar';
+                    document.getElementById('questionText').textContent = data.deskripsi || 'Apa jawabannya?';
+                    document.getElementById('questionClue').textContent = 'Perhatikan gambar baik-baik';
+                    document.getElementById('questionImg').src = data.img;
+                    document.getElementById('questionImg').classList.remove('hidden');
+                    break;
+                case 'susunkata':
+                    document.getElementById('gameTitle').textContent = '🔤 Susun Kata';
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Tipe: ' + (data.tipe ||
+                        'Umum');
+                    break;
+                case 'asahotak':
+                    document.getElementById('gameTitle').textContent = '🧠 Asah Otak';
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Jawab pertanyaan ini';
+                    break;
+            }
+            document.getElementById('answerInput').focus();
+        }
+
+        // ============ SUBMIT ANSWER ============
+        function submitAnswer() {
+            if (!currentGame) return;
+            const input = document.getElementById('answerInput').value.trim().toLowerCase();
+            const fb = document.getElementById('feedback');
+            if (!input) {
+                fb.textContent = '⚠️ Isi jawaban dulu!';
+                fb.className = 'feedback wrong';
+                sfxWrong();
+                return;
+            }
+            if (input === currentAnswer) {
+                fb.textContent = '🎉 BENAR! Mantap!';
+                fb.className = 'feedback correct';
+                score++;
+                document.getElementById('scoreCount').textContent = score;
+                sfxCorrect();
+                sfxWin();
+                showToast('✅ Jawaban Benar! +1 ⭐');
+                setTimeout(() => nextQuestion(), 1500);
+            } else {
+                fb.textContent = '❌ Salah, coba lagi!';
+                fb.className = 'feedback wrong';
+                sfxWrong();
+                document.getElementById('answerInput').value = '';
+                document.getElementById('answerInput').focus();
+            }
+        }
+
+        async function skipQuestion() {
+            sfxClick();
+            showToast('⏭️ Dilewati. Jawaban: ' + currentAnswer.toUpperCase());
+            await nextQuestion();
+        }
+
+        async function nextQuestion() {
+            const data = await fetchQuestion(currentGame);
+            if (!data) return;
+            currentAnswer = data.jawaban.trim().toLowerCase();
+            document.getElementById('answerInput').value = '';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('questionImg').classList.add('hidden');
+
+            switch (currentGame) {
+                case 'tebakkalimat':
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Lengkapi peribahasa di atas';
+                    break;
+                case 'tebakgambar':
+                    document.getElementById('questionText').textContent = data.deskripsi || 'Apa jawabannya?';
+                    document.getElementById('questionClue').textContent = 'Perhatikan gambar baik-baik';
+                    document.getElementById('questionImg').src = data.img;
+                    document.getElementById('questionImg').classList.remove('hidden');
+                    break;
+                case 'susunkata':
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Tipe: ' + (data.tipe ||
+                        'Umum');
+                    break;
+                case 'asahotak':
+                    document.getElementById('questionText').textContent = data.soal;
+                    document.getElementById('questionClue').textContent = 'Jawab pertanyaan ini';
+                    break;
+            }
+            document.getElementById('answerInput').focus();
+        }
+
+        function backToLobby() {
+            sfxClick();
+            currentGame = null;
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('settingsPanel').classList.add('hidden');
+            document.getElementById('lobby').classList.remove('hidden');
+        }
+
+        // ============ ENTER KEY ============
+        document.getElementById('answerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitAnswer();
+        });
+
+        // ============ INIT ============
+        createParticles();
+        document.getElementById('scoreCount').textContent = score;
+
+        console.log('🎮 Xvlover Game Hub Premium Ready');
+        console.log('🔥 API by @pitucode | Dev by Rahmad Faujan');
+    </script>
+</body>
+</html>
